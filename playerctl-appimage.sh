@@ -16,13 +16,27 @@ LDFLAGS="-static"
 git clone --recursive "$REPO" && cd playerctl \
 && meson setup build -Dprefix="$CURRENTDIR" -Ddefault_library=static -Dgtk-doc=false -Dintrospection=false \
 && ninja -C build && ninja -C build install && cd .. && rm -rf ./playerctl ./include \
-&& sed -i 's#Exec=.*#Exec=playerctld daemon#g' ./share/dbus-1/services/org.mpris.MediaPlayer2.playerctld.service || exit 1
+&& sed -i 's#Exec=.*#Exec=playerctl daemon#g' ./share/dbus-1/services/org.mpris.MediaPlayer2.playerctld.service || exit 1
 
 # AppRun
 cat >> ./AppRun << 'EOF'
 #!/bin/sh
 CURRENTDIR="$(readlink -f "$(dirname "$0")")"
-"$CURRENTDIR"/bin/playerctl "$@"
+DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}"
+
+if [ "$1" = "--install-daemon" ]; then
+	mkdir -p "$DATADIR"/dbus-1/services \
+	&& cp "$CURRENTDIR"/share/dbus-1/services/* "$DATADIR"/dbus-1/services || exit 1
+	echo "Dbus service installed at $DATADIR/dbus-1/services"
+elif [ "$1" = "daemon" ]; then
+	if ! ls "$DATADIR"/dbus-1/services/*playerctld* 1>/dev/null; then
+		echo "You need to run --install-daemon to install the dbus service, bailing out"
+		exit 1
+	fi
+	"$CURRENTDIR"/bin/playerctld
+else
+	"$CURRENTDIR"/bin/playerctl "$@"
+fi
 EOF
 chmod a+x ./AppRun
 
