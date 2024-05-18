@@ -34,6 +34,10 @@ elif [ "$1" = "daemon" ]; then
 		exit 1
 	fi
 	"$CURRENTDIR"/bin/playerctld
+elif [ -z "$@" ]; then
+	echo "AppImage commands:"
+	echo "--install-daemon	Installs the dbus service in $DATADIR"
+	echo "daemon	Starts playerctld daemon"
 else
 	"$CURRENTDIR"/bin/playerctl "$@"
 fi
