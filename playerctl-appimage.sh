@@ -14,7 +14,7 @@ CFLAGS='-static -O3'
 LDFLAGS="-static"
 
 git clone --recursive "$REPO" && cd playerctl \
-&& meson setup build -Dprefix="$CURRENTDIR" -Ddefault_library=static -Dgtk-doc=false -Dintrospection=false \
+&& meson setup build -Dprefix="$CURRENTDIR" -Ddefault_library=static -Dgtk-doc=false -Dintrospection=false -Dc_link_args=-static \
 && ninja -C build && ninja -C build install && cd .. && rm -rf ./playerctl ./include \
 && sed -i 's#Exec=.*#Exec=playerctl daemon#g' ./share/dbus-1/services/org.mpris.MediaPlayer2.playerctld.service || exit 1
 ldd ./bin/playerctl
