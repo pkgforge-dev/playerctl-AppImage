@@ -22,7 +22,7 @@ ldd ./bin/playerctl
 # AppRun
 cat >> ./AppRun << 'EOF'
 #!/bin/sh
-CURRENTDIR="$(readlink -f "$(dirname "$0")")"
+CURRENTDIR="$(dirname "$(readlink -f "$0")")"
 DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}"
 
 if [ "$1" = "--install-daemon" ]; then
