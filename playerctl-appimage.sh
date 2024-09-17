@@ -25,24 +25,49 @@ cat >> ./AppRun << 'EOF'
 CURRENTDIR="$(dirname "$(readlink -f "$0")")"
 DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}"
 
-if [ "$1" = "--install-daemon" ]; then
-	mkdir -p "$DATADIR"/dbus-1/services \
-	&& cp "$CURRENTDIR"/share/dbus-1/services/* "$DATADIR"/dbus-1/services || exit 1
+_install_daemon() {
+	DAEMON="$(find "$CURRENTDIR" -type f -name 'org*.service' -print -quit)"
+	mkdir -p "$DATADIR"/dbus-1/services || exit 1
+	cp -n "$DAEMON" "$DATADIR"/dbus-1/services || exit 1
 	echo "Dbus service installed at $DATADIR/dbus-1/services"
-elif [ "$1" = "daemon" ]; then
-	if ! ls "$DATADIR"/dbus-1/services/*playerctld* 1>/dev/null; then
-		echo "You need to run --install-daemon to install the dbus service, bailing out"
+	exit 0
+}
+_run_daemon() {
+	if [ ! -f "$DATADIR"/dbus-1/services/*playerctld* ]; then
+		echo 'You need to run "--install-daemon" to install the dbus service'
 		exit 1
 	fi
-	"$CURRENTDIR"/bin/playerctld
-elif [ -z "$@" ]; then
-	"$CURRENTDIR"/bin/playerctl
-	echo "AppImage commands:"
-	echo " --install-daemon	Installs the dbus service in $DATADIR"
-	echo " daemon			Starts playerctld daemon"
-else
-	"$CURRENTDIR"/bin/playerctl "$@"
-fi
+	exec "$CURRENTDIR"/bin/playerctld
+}
+
+BIN="$ARGV0"
+unset ARGV0
+case "$BIN" in
+	'playerctl'|'playerctld')
+		exec "$CURRENTDIR/$BIN" "$@"
+		;;
+	'')
+		"$CURRENTDIR"/bin/playerctl
+		echo "AppImage commands:"
+		echo " \"--install-daemon\" Installs dbus service in $DATADIR"
+		echo " \"--daemon\"         Starts playerctld daemon"
+		echo "You can also symlink the appimage with the name playerctld"
+		echo "to start the daemon by launching that symlink"
+		exit 0
+		;;
+
+	*)
+		case "$1" in
+		'--daemon')
+			_run_daemon
+			;;
+		'--install-daemon')
+			_install_daemon
+			;;
+
+		esac
+	;;
+esac
 EOF
 chmod a+x ./AppRun
 
