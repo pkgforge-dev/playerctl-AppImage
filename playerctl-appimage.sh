@@ -47,13 +47,14 @@ case "$BIN" in
 		exec "$CURRENTDIR/$BIN" "$@"
 		;;
 	'')
-		"$CURRENTDIR"/bin/playerctl
-		echo "AppImage commands:"
-		echo " \"--install-daemon\" Installs dbus service in $DATADIR"
-		echo " \"--daemon\"         Starts playerctld daemon"
-		echo "You can also symlink the appimage with the name playerctld"
-		echo "to start the daemon by launching that symlink"
-		exit 0
+		"$CURRENTDIR"/bin/playerctl "$@"
+		if [ -z "$1" ]; then
+			echo "AppImage commands:"
+			echo " \"--install-daemon\" Installs dbus service in $DATADIR"
+			echo " \"--daemon\"         Starts playerctld daemon"
+			echo "You can also symlink the appimage with the name playerctld"
+			echo "to start the daemon by launching that symlink"
+		fi
 		;;
 
 	*)
