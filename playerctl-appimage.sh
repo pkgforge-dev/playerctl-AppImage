@@ -44,7 +44,7 @@ BIN="$ARGV0"
 unset ARGV0
 case "$BIN" in
 	'playerctl'|'playerctld')
-		exec "$CURRENTDIR/$BIN" "$@"
+		exec "$CURRENTDIR/bin/$BIN" "$@"
 		;;
 	'')
 		"$CURRENTDIR"/bin/playerctl "$@"
