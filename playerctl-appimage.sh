@@ -36,7 +36,7 @@ cat >> ./AppRun << 'EOF'
 CURRENTDIR="$(dirname "$(readlink -f "$0")")"
 DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}"
 BIN="${ARGV0#./}"
-DAEMON="$(find "$CURRENTDIR" -type f -name 'org*.service' -print -quit 2>dev/null)"
+DAEMON="$(find "$CURRENTDIR" -type f -name 'org*.service' -print -quit 2>/dev/null)"
 daemon_name="$(basename "$DAEMON")"
 export PATH="$CURRENTDIR/bin:$PATH"
 unset ARGV0
