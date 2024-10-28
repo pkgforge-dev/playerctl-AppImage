@@ -25,7 +25,7 @@ git clone --recursive "$REPO" && cd playerctl \
 sed -i 's#Exec=.*#Exec=playerctl daemon#g' ./share/dbus-1/services/org.mpris.MediaPlayer2.playerctld.service || exit 1
 
 # ADD LIBRARIES
-mkdir ./shared/lib && mv ./lib/*/* ./shared/lib
+mkdir -p ./shared/lib && mv ./lib/*/* ./shared/lib || exit 1
 wget "$LIB4BN" -O ./lib4bin && wget "$SHARUN" -O ./sharun || exit 1
 chmod +x ./lib4bin ./sharun
 HARD_LINKS=1 ./lib4bin ./bin/* && rm -f ./lib4bin || exit 1
