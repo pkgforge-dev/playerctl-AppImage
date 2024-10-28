@@ -47,7 +47,7 @@ _playerctld () {
 		cp -n "$DAEMON" "$DATADIR"/dbus-1/services || exit 1
 		echo "Dbus service installed at $DATADIR/dbus-1/services/$daemon_name"
 	fi
-	exec "$CURRENTDIR"/bin/playerctl "$@"
+	exec "$CURRENTDIR"/bin/playerctld "$@"
 }
 
 if [ "$1" = "--daemon" ]; then
