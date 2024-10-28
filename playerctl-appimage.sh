@@ -41,21 +41,20 @@ daemon_name="$(basename "$DAEMON")"
 export PATH="$CURRENTDIR/bin:$PATH"
 unset ARGV0
 
-if [ ! -e "$DATADIR/dbus-1/services/$daemon_name" ]; then
-	mkdir -p "$DATADIR"/dbus-1/services || exit 1
-	cp -n "$DAEMON" "$DATADIR"/dbus-1/services || exit 1
-	echo "Dbus service installed at $DATADIR/dbus-1/services/$daemon_name"
-fi
-
-case "$BIN" in
-	'playerctl'|'playerctld')
-		exec "$CURRENTDIR/bin/$BIN" "$@"
-		;;
-esac
+_playerctld () {
+	if [ ! -e "$DATADIR/dbus-1/services/$daemon_name" ]; then
+		mkdir -p "$DATADIR"/dbus-1/services || exit 1
+		cp -n "$DAEMON" "$DATADIR"/dbus-1/services || exit 1
+		echo "Dbus service installed at $DATADIR/dbus-1/services/$daemon_name"
+	fi
+	exec "$CURRENTDIR"/bin/playerctl "$@"
+}
 
 if [ "$1" = "--daemon" ]; then
 	shift
-	exec "$CURRENTDIR"/bin/playerctld "$@"
+	_playerctld "$@"
+elif [ "$BIN" = "playerctld" ]; then
+	_playerctld "$@"
 else
 	exec "$CURRENTDIR"/bin/playerctl "$@"
 fi
