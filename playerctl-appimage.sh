@@ -5,8 +5,9 @@ set -u
 APP=playerctl
 APPDIR="$APP".AppDir
 REPO="https://github.com/altdesktop/playerctl.git"
-APPIMAGETOOL="https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
 export ARCH="$(uname -m)"
+APPIMAGETOOL="https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$ARCH.AppImage"
+
 
 # CREATE DIRECTORIES
 mkdir -p ./"$APP/$APPDIR" && cd ./"$APP/$APPDIR" || exit 1
