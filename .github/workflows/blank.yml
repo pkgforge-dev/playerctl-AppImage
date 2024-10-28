@@ -10,17 +10,16 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v3
 
     - name: build
       run: |
         sudo apt update
-        sudo apt install libfuse2 python3-pip
-        sudo pip3 install meson
-        sudo apt install libncursesw5-dev autotools-dev autoconf automake build-essential ninja-build
-        wget https://raw.githubusercontent.com/Samueru-sama/playerctl-AppImage/main/playerctl-appimage.sh
+        sudo apt install meson libncursesw5-dev autotools-dev libglib2.0-dev \
+          autoconf automake build-essential ninja-build desktop-file-utils
+
         chmod a+x ./playerctl-appimage.sh
         ./playerctl-appimage.sh
         mkdir dist
