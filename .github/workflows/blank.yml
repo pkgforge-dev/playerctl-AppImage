@@ -17,8 +17,8 @@ jobs:
     - name: build
       run: |
         sudo apt update
-        sudo apt install meson libncursesw5-dev autotools-dev \
-          libglib2.0-dev autoconf automake build-essential ninja-build
+        sudo apt install meson libncursesw5-dev autotools-dev libglib2.0-dev \
+          autoconf automake build-essential ninja-build desktop-file-validate
 
         chmod a+x ./playerctl-appimage.sh
         ./playerctl-appimage.sh
