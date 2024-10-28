@@ -68,7 +68,7 @@ fi
 EOF
 chmod a+x ./AppRun
 
-VERSION=$(./shared/bin/playerctl --version | awk 'FNR==1 {print $1; exit}')
+VERSION=$(./bin/playerctl --version | awk 'FNR==1 {print $1; exit}')
 
 # Desktop
 cat >> ./"$APP.desktop" << 'EOF'
