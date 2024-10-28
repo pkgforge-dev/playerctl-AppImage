@@ -7,7 +7,8 @@ APPDIR="$APP".AppDir
 REPO="https://github.com/altdesktop/playerctl.git"
 export ARCH="$(uname -m)"
 APPIMAGETOOL="https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$ARCH.AppImage"
-
+LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
+SHARUN="https://bin.ajam.dev/$ARCH/sharun"
 
 # CREATE DIRECTORIES
 mkdir -p ./"$APP/$APPDIR" && cd ./"$APP/$APPDIR" || exit 1
@@ -18,9 +19,17 @@ CFLAGS='-static -O3'
 LDFLAGS="-static"
 
 git clone --recursive "$REPO" && cd playerctl \
-	&& meson setup build -Dprefix="$CURRENTDIR" -Ddefault_library=static -Dgtk-doc=false -Dintrospection=false \
+	&& meson setup build -Dprefix="$CURRENTDIR" -Dgtk-doc=false -Dintrospection=false \
 	&& ninja -C build && ninja -C build install && cd .. && rm -rf ./playerctl ./include || exit 1
 sed -i 's#Exec=.*#Exec=playerctl daemon#g' ./share/dbus-1/services/org.mpris.MediaPlayer2.playerctld.service || exit 1
+
+# ADD LIBRARIES
+mkdir ./usr/lib && rm -rf ./polybar
+mv ./usr ./shared
+wget "$LIB4BN" -O ./lib4bin && wget "$SHARUN" -O ./sharun || exit 1
+chmod +x ./lib4bin ./sharun
+HARD_LINKS=1 ./lib4bin ./bin/* && rm -f ./lib4bin || exit 1
+
 
 # AppRun
 cat >> ./AppRun << 'EOF'
