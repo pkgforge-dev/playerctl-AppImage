@@ -3,16 +3,15 @@
 set -u
 
 APP=playerctl
-APPDIR="$APP".AppDir
 REPO="https://github.com/altdesktop/playerctl.git"
 export ARCH="$(uname -m)"
 export APPIMAGE_EXTRACT_AND_RUN=1
+UPINFO="gh-releases-zsync|$(echo $GITHUB_REPOSITORY | tr '/' '|')|latest|*$ARCH.AppImage.zsync"
 APPIMAGETOOL="https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$ARCH.AppImage"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
-SHARUN="https://bin.ajam.dev/$ARCH/sharun"
 
 # CREATE DIRECTORIES
-mkdir -p ./"$APP/$APPDIR" && cd ./"$APP/$APPDIR" || exit 1
+mkdir -p ./"$APP"/AppDir && cd ./"$APP"/AppDir || exit 1
 
 # DOWNLOAD AND BUILD PLAYERCTL STATICALLY
 CURRENTDIR="$(readlink -f "$(dirname "$0")")" # DO NOT MOVE THIS
@@ -26,13 +25,14 @@ sed -i 's#Exec=.*#Exec=playerctl daemon#g' ./share/dbus-1/services/org.mpris.Med
 
 # ADD LIBRARIES
 mkdir -p ./shared/lib && mv ./lib/*/* ./shared/lib || exit 1
-wget "$LIB4BN" -O ./lib4bin && wget "$SHARUN" -O ./sharun || exit 1
-chmod +x ./lib4bin ./sharun
-HARD_LINKS=1 ./lib4bin ./bin/* && rm -f ./lib4bin || exit 1
+wget "$LIB4BN" -O ./lib4bin || exit 1
+chmod +x ./lib4bin
+./lib4bin -p -v -r ./bin/* 
+rm -f ./lib4bin 
 
 # AppRun
 cat >> ./AppRun << 'EOF'
-#!/bin/sh
+#!/usr/bin/env sh
 CURRENTDIR="$(dirname "$(readlink -f "$0")")"
 DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}"
 BIN="${ARGV0#./}"
@@ -89,9 +89,9 @@ wget -q "$APPIMAGETOOL" -O ./appimagetool || exit 1
 chmod +x ./appimagetool
 
 # Do the thing!
-echo "Making appimage"
+echo "Making appimage..."
 ./appimagetool --comp zstd \
 	--mksquashfs-opt -Xcompression-level --mksquashfs-opt 22 \
-	./"$APP".AppDir "$APP"-"$VERSION"-"$ARCH".AppImage
-mv ./*.AppImage .. && cd .. && rm -rf ./"$APP" || exit 1
+	-n -u "$UPINFO" "$PWD"/AppDir "$PWD"/"$APP"-"$VERSION"-anylinux-"$ARCH".AppImage
+mv ./*.AppImage* .. && cd .. && rm -rf ./"$APP" || exit 1
 echo "All Done!"
