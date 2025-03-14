@@ -90,7 +90,7 @@ chmod +x ./appimagetool
 
 # Do the thing!
 echo "Making appimage..."
-./appimagetool --comp zstd \
+URUNTIME_PRELOAD=1 ./appimagetool --comp zstd \
 	--mksquashfs-opt -Xcompression-level --mksquashfs-opt 22 \
 	-n -u "$UPINFO" "$PWD"/AppDir "$PWD"/"$APP"-"$VERSION"-anylinux-"$ARCH".AppImage
 mv ./*.AppImage* .. && cd .. && rm -rf ./"$APP" || exit 1
