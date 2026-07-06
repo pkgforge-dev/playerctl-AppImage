@@ -53,7 +53,9 @@ build_util_linux() (
 		--enable-libblkid            \
 		--enable-libmount            \
 		--enable-static              \
-		--without-python
+		--without-python             \
+		--without-systemd            \
+		--without-udev
 	make -j"$(nproc)"
 	cp .libs/libmount.a "$STATIC_LIBS_DIR"/lib
 	cp .libs/libblkid.a "$STATIC_LIBS_DIR"/lib
