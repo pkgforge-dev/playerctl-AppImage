@@ -7,6 +7,9 @@ VERSION=$(pacman -Q playerctl | awk '{print $2; exit}')
 export ARCH VERSION
 export OUTPATH=./dist
 export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
+export DESKTOP=DUMMY
+export ICON=DUMMY
+export MAIN_BIN=playerctl
 
 # Deploy dependencies
 quick-sharun /usr/bin/playerctl /usr/bin/playerctld
