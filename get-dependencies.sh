@@ -60,8 +60,8 @@ build_util_linux() (
 )
 
 create_stubs() (
-	echo "Creating stub static libs..."
 	ar rcs "$STATIC_LIBS_DIR"/lib/libelogind.a
+	ar rcs "$STATIC_LIBS_DIR"/lib/libsystemd.a
 )
 
 build_playerctl() (
