@@ -3,13 +3,13 @@
 set -eu
 
 ARCH=$(uname -m)
-VERSION=$(pacman -Q playerctl | awk '{print $2; exit}')
-export ARCH VERSION
+export ARCH
 export OUTPATH=./dist
 export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
 export DESKTOP=DUMMY
 export ICON=DUMMY
 export MAIN_BIN=playerctl
+export ANYLINUX_LIB=0
 
 # Deploy dependencies
 quick-sharun /usr/bin/playerctl /usr/bin/playerctld
